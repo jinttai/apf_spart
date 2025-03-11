@@ -41,12 +41,14 @@ def repulsive_force_link_joint(pcd, r_min, rJ, Rj, link_length):
     else:
         return np.array([0.0, 0.0, 0.0])
 
-def attractive_force_link(goal, d_goal, rJ, Rj, link_length):
+def attractive_force_link(goal, d_goal,r_hug, rJ, Rj, link_length):
+    #r_hug :radius of hugging circle
     k_a1 = 0.5
     k_a2 = 0.5
     x = np.dot(Rj.T, link_length/2) + rJ
-    if np.linalg.norm(x - goal) < d_goal:
-        return k_a1 * (x - goal)
+    d = np.linalg.norm(x - goal)
+    if abs(d - r_hug) < d_goal:
+        return k_a1 * (d - r_hug) * (x - goal) / d
     else:
         return k_a2 * (x - goal) / np.linalg.norm(x - goal)
 
@@ -57,16 +59,16 @@ def force_to_torque(F, J_0k, J_mk, H0, H0m):
     return tau
 
 def total_torque(robot, r0, rL, P0, pm, rJ, Rj, H0, H0m, link_length, pcd, goal, d_goal, r_min):
-    # goal : goal position for each link
-    # d_goal : goal distance for each link
+    # goal : goal position for hugging
+    # d_goal : threshold distance 
     n = robot['n_links_joints']
     F_r = np.zeros((3, n))
     F_a = np.zeros((3, n))
     torque = np.zeros((n, 1))
     for i in range(n):
         F_r_joint = repulsive_force_link_joint(pcd, r_min, rJ[:,i], Rj[:,:,i], link_length[i])
-        F_r[:,i] = np.dot(Rj.T, F_r_joint)
-        F_a[:,i] = attractive_force_link(goal[:,i], d_goal[i], rJ[:,i], Rj[:,:,i], link_length[i])
+        F_r[:,i] = np.dot(Rj[:,:,i].T, F_r_joint)
+        F_a[:,i] = attractive_force_link(goal, d_goal, rJ[:,i], Rj[:,:,i], link_length[i])
         F_k = F_a[:,i] + F_r[:,i]
         rp = rJ[:,i]
         J_0k, J_mk = spart.jacobians(rp, r0, rL, P0, pm, i, robot)
@@ -75,5 +77,5 @@ def total_torque(robot, r0, rL, P0, pm, rJ, Rj, H0, H0m, link_length, pcd, goal,
 
 
 
-# end-effector 고려 안됨
+
     

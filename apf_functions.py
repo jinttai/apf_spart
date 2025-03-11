@@ -18,6 +18,7 @@ def get_closest_point(pcd, x):
     dis_min = distances[idx]
     return point_min, dis_min
 
+
 def attractive_potential_field(x, goal, d_goal):
     k_a1 = 0.5
     k_a2 = 0.5

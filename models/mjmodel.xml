@@ -1,0 +1,59 @@
+<mujoco model="Chaser">
+    <compiler angle="radian"/>
+    
+    <!-- Zero gravity -->
+    <option gravity="0 0 0" />
+    
+    <worldbody>
+        <!-- Root body with a free joint, making it float in space -->
+        <body name="chaser_base" pos="0 0 0">
+            <joint name="base_free" type="free"/>
+            <inertial pos="0 0 0.1" mass="50" diaginertia="0.05 0.05 0.05"/>
+
+            <!-- Original "base" geometry -->
+            <geom size="0.375 0.375 0.375" type="box" contype="0" conaffinity="0" 
+                  group="1" density="0" rgba="0.2 0.2 0.2 1"/>
+            <geom size="0.05 0.125" pos="0 0 0.5" type="cylinder" contype="0" conaffinity="0" 
+                  group="1" density="0" rgba="0.2 0.2 0.2 1"/>
+
+            <!-- Link_1 -->
+            <body name="Link_1" pos="0 0 0.625">
+                <inertial pos="0 0 0.1" mass="5" diaginertia="0.05 0.05 0.05"/>
+                <joint name="Joint_1" pos="0 0 0" axis="0 0 1"/>
+                <geom size="0.05 0.1" pos="0 0 0.1" type="cylinder" contype="0" conaffinity="0"
+                      group="1" density="0" rgba="0.5 0.7 1 1"/>
+                <geom size="0.1 0.05" type="cylinder" contype="0" conaffinity="0"
+                      group="1" density="0" rgba="1 0.423529 0.0392157 1"/>
+
+                <!-- Link_2 -->
+                <body name="Link_2" pos="0 0 0.2">
+                    <inertial pos="0 0 0.375" mass="10" diaginertia="0.1 0.1 0.1"/>
+                    <joint name="Joint_2" pos="0 0 0" axis="1 0 0"/>
+                    <geom size="0.05 0.375" pos="0 0 0.375" type="cylinder" contype="0" conaffinity="0"
+                          group="1" density="0" rgba="0.5 0.7 1 1"/>
+                    <geom size="0.075 0.075" quat="0.707105 0 0.707108 0" type="cylinder" contype="0" conaffinity="0"
+                          group="1" density="0" rgba="1 0.423529 0.0392157 1"/>
+
+                    <!-- Link_3 -->
+                    <body name="Link_3" pos="0 0 0.75">
+                        <inertial pos="0 0 0.375" mass="10" diaginertia="0.1 0.1 0.1"/>
+                        <joint name="Joint_3" pos="0 0 0" axis="1 0 0"/>
+                        <geom size="0.05 0.375" pos="0 0 0.375" type="cylinder" contype="0" conaffinity="0"
+                              group="1" density="0" rgba="0.5 0.7 1 1"/>
+                        <geom size="0.075 0.075" quat="0.707105 0 0.707108 0" type="cylinder" contype="0" conaffinity="0"
+                              group="1" density="0" rgba="1 0.423529 0.0392157 1"/>
+                        <geom size="0.1" pos="0 0 0.75" contype="0" conaffinity="0" 
+                              group="1" density="0" rgba="1 0 0 1"/>
+                    </body>
+                </body>
+            </body>
+        </body>
+    </worldbody>
+
+    <!-- Actuators for each joint -->
+    <actuator>
+        <motor name="Actuator_1" joint="Joint_1" ctrlrange="-1 1"/>
+        <motor name="Actuator_2" joint="Joint_2" ctrlrange="-1 1"/>
+        <motor name="Actuator_3" joint="Joint_3" ctrlrange="-1 1"/>
+    </actuator>
+</mujoco>
